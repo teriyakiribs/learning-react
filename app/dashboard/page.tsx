@@ -2,6 +2,7 @@ import React from 'react';
 import Counter from '../components/Counter/Counter';
 import TemperatureConverter from '../components/TemperatureConverter/TemperatureConverter';
 import Timer from "../components/Timer/Timer";
+import FlightBooker from "../components/FlightBooker/FlightBooker";
 
 const Page: React.FC = () => {
     return (
@@ -15,6 +16,7 @@ const Page: React.FC = () => {
             <hr/>
             <Timer />
             <hr />
+            <FlightBooker/>
 
 
         </div>

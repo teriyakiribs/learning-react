@@ -1,0 +1,27 @@
+/* components/FlightBooker.module.css */
+.container {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.field {
+    margin: 20px;
+}
+
+.inputField {
+    margin-left: 10px;
+    color: black;
+}
+
+.invalid {
+    border-color: red;
+}
+
+.button {
+    font-size: 16px;
+    padding: 10px 20px;
+}
+
+.selectField {
+    color: black; /* Ensures the text color is black */
+}
