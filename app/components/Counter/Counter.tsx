@@ -1,3 +1,7 @@
+// components/Counter.tsx
+
+"use client";
+
 import React, { useState } from 'react';
 
 const Counter: React.FC = () => {
