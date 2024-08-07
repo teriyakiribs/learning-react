@@ -12,8 +12,11 @@ test('renders Counter component with initial state', () => {
 
 test('increments counter on button click', () => {
     render(<Counter />);
+
+    const counterLabel = screen.getByTestId('label')
+    expect(counterLabel.innerHTML).toBe('0');
+
     const button = screen.getByText(/Increment/i);
     fireEvent.click(button);
-    const counterText = screen.getByText(/1/i);
-    expect(counterText).toBeInTheDocument();
+    expect(counterLabel.innerHTML).toBe('1');
 });

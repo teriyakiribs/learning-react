@@ -14,7 +14,7 @@ const Counter: React.FC = () => {
     return (
         <div style={{ textAlign: 'center', marginTop: '50px' }}>
             <h1>Counter</h1>
-            <div style={{ fontSize: '24px', margin: '20px' }}>{count}</div>
+            <div data-testid='label' style={{ fontSize: '24px', margin: '20px' }}>{count}</div>
             <button onClick={increment} style={{ fontSize: '16px', padding: '10px 20px' }}>Increment</button>
         </div>
     );
