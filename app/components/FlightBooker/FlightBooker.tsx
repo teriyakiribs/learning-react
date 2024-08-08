@@ -7,7 +7,7 @@ import styles from './FlightBooker.module.css';
 const FlightBooker: React.FC = () => {
     const [flightType, setFlightType] = useState<string>('one-way flight');
     const [startDate, setStartDate] = useState<string>('2023-01-01');
-    const [returnDate, setReturnDate] = useState<string>('2023-01-01');
+    const [returnDate, setReturnDate] = useState<string>('2023-01-02');
     const [isValidStartDate, setIsValidStartDate] = useState<boolean>(true);
     const [isValidReturnDate, setIsValidReturnDate] = useState<boolean>(true);
 
