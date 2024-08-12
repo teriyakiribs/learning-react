@@ -3,6 +3,7 @@ import Counter from '../components/Counter/Counter';
 import TemperatureConverter from '../components/TemperatureConverter/TemperatureConverter';
 import Timer from "../components/Timer/Timer";
 import FlightBooker from "../components/FlightBooker/FlightBooker";
+import Crud from "@/app/components/CRUD/Crud";
 
 const Page: React.FC = () => {
     return (
@@ -14,9 +15,14 @@ const Page: React.FC = () => {
             <hr/>
             <TemperatureConverter/>
             <hr/>
-            <Timer />
-            <hr />
+            <Timer/>
+            <hr/>
             <FlightBooker/>
+            <hr/>
+            <br/>
+            <Crud/>
+            <hr/>
+            <br/>
 
 
         </div>

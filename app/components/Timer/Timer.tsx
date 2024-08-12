@@ -8,70 +8,56 @@ const Timer: React.FC = () => {
     const [duration, setDuration] = useState<number>(60);
     const [isRunning, setIsRunning] = useState<boolean>(true);
 
-    const intervalRef = useRef<number | null>(null);
-
     useEffect(() => {
-        if (isRunning) {
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-            }
-            intervalRef.current = window.setInterval(() => {
-                setElapsedTime((prevElapsedTime) => {
-                    if (prevElapsedTime >= duration) {
-                        clearInterval(intervalRef.current as number);
-                        return prevElapsedTime;
-                    }
-                    return prevElapsedTime + 1;
-                });
+        let timer: NodeJS.Timeout;
+        if (isRunning && elapsedTime < duration) {
+            timer = setInterval(() => {
+                setElapsedTime(prevElapsedTime => prevElapsedTime + 1);
             }, 1000);
-        } else if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-        }
-
-        return () => {
-            if (intervalRef.current) {
-                clearInterval(intervalRef.current);
-            }
-        };
-    }, [isRunning, duration]);
-
-    useEffect(() => {
-        if (elapsedTime >= duration) {
+        } else if (elapsedTime >= duration) {
             setIsRunning(false);
         }
-    }, [elapsedTime, duration]);
-
-    const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setDuration(Number(e.target.value));
-        if (elapsedTime < Number(e.target.value)) {
-            setIsRunning(true);
-        }
-    };
+        return () => clearInterval(timer);
+    }, [isRunning, elapsedTime, duration]);
 
     const handleReset = () => {
         setElapsedTime(0);
         setIsRunning(true);
     };
 
-    const percentage = (elapsedTime / duration) * 100;
+    const handleDurationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const newDuration = Number(e.target.value);
+        setDuration(newDuration);
+        if (newDuration > elapsedTime) {
+            setIsRunning(true);
+        }
+    };
 
     return (
         <div style={{ textAlign: 'center', marginTop: '50px' }}>
             <h1>Timer</h1>
-            <div style={{ margin: '20px', height: '30px', width: '300px', border: '1px solid #000', position: 'relative' }}>
-                <div style={{ height: '100%', width: `${percentage}%`, backgroundColor: 'green', transition: 'width 0.1s linear' }}></div>
+            <div>
+                <progress value={elapsedTime} max={duration}></progress>
             </div>
-            <div>{elapsedTime} seconds</div>
-            <input
-                type="range"
-                min="10"
-                max="120"
-                value={duration}
-                onChange={handleSliderChange}
-                style={{ width: '300px', margin: '20px' }}
-            />
-            <div>Duration: {duration} seconds</div>
-            <button onClick={handleReset} style={{ fontSize: '16px', padding: '10px 20px' }}>Reset</button>
+            <div>
+                <label>
+                    Duration:
+                    <input
+                        type="range"
+                        min="1"
+                        max="300"
+                        value={duration}
+                        onChange={handleDurationChange}
+                    />
+                    {duration} seconds
+                </label>
+            </div>
+            <div>
+                Elapsed Time: {elapsedTime} seconds
+            </div>
+            <div>
+                <button onClick={handleReset}>Reset</button>
+            </div>
         </div>
     );
 };
