@@ -61,24 +61,28 @@ const Crud: React.FC = () => {
     return (
         <div className={styles.container}>
             <div className={styles.field}>
-                <label>Prefix:</label>
+                <label htmlFor="prefix">Prefix:</label>
                 <input
+                    id="prefix"
                     type="text"
                     value={prefix}
                     onChange={(e) => setPrefix(e.target.value)}
                 />
             </div>
             <div className={styles.field}>
-                <label>Name:</label>
+                <label htmlFor="name">Name:</label>
                 <input
+                    id="name"
                     type="text"
                     value={name}
+                    data-testid="name-input"
                     onChange={(e) => setName(e.target.value)}
                 />
             </div>
             <div className={styles.field}>
-                <label>Surname:</label>
+                <label htmlFor="surname">Surname:</label>
                 <input
+                    id="surname"
                     type="text"
                     value={surname}
                     onChange={(e) => setSurname(e.target.value)}
