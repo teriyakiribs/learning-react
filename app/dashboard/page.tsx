@@ -4,26 +4,27 @@ import TemperatureConverter from '../components/TemperatureConverter/Temperature
 import Timer from "../components/Timer/Timer";
 import FlightBooker from "../components/FlightBooker/FlightBooker";
 import Crud from "@/app/components/CRUD/Crud";
+import CircleDrawer from "@/app/components/CircleDrawer/CircleDrawer";
 
 const Page: React.FC = () => {
     return (
 
         <div style={{textAlign: 'center', marginTop: '50px'}}>
-            <h1>Dashboard Page</h1>
-            <hr/>
-            <Counter/>
-            <hr/>
-            <TemperatureConverter/>
-            <hr/>
-            <Timer/>
-            <hr/>
-            <FlightBooker/>
-            <hr/>
-            <br/>
-            <Crud/>
-            <hr/>
-            <br/>
-
+                <h1>Dashboard Page</h1>
+                <hr/>
+                <Counter/>
+                <hr/>
+                <TemperatureConverter/>
+                <hr/>
+                <Timer/>
+                <hr/>
+                <FlightBooker/>
+                <hr/>
+                <br/>
+                <Crud/>
+                <hr/>
+                <br/>
+                <CircleDrawer/>
 
         </div>
     );

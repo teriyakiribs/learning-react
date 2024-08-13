@@ -1,0 +1,29 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.controls {
+    margin-bottom: 10px;
+}
+
+.controls button {
+    margin-right: 20px;
+}
+
+.canvas {
+    border: 1px solid black;
+    background-color: white;
+}
+
+.adjustFrame {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.adjustFrame input {
+    margin-bottom: 10px;
+}
