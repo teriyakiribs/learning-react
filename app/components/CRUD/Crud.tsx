@@ -1,7 +1,6 @@
-
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styles from './Crud.module.css';
 
 const Crud: React.FC = () => {
@@ -11,14 +10,9 @@ const Crud: React.FC = () => {
     const [surname, setSurname] = useState<string>('');
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
-    useEffect(() => {
-        // Filtering logic can be placed here if we need to filter the displayed list in real-time
-    }, [prefix]);
-
     const handleAdd = () => {
-        const fullName = `${prefix} ${name} ${surname}`.trim();
+        const fullName = `${name} ${surname}`.trim();
         setNames([...names, fullName]);
-        setPrefix('')
         setName('');
         setSurname('');
     };
@@ -26,9 +20,8 @@ const Crud: React.FC = () => {
     const handleUpdate = () => {
         if (selectedIndex !== null) {
             const updatedNames = [...names];
-            updatedNames[selectedIndex] = `${prefix} ${name} ${surname}`;
+            updatedNames[selectedIndex] = `${name} ${surname}`;
             setNames(updatedNames);
-            setPrefix('')
             setName('');
             setSurname('');
             setSelectedIndex(null);
@@ -39,7 +32,6 @@ const Crud: React.FC = () => {
         if (selectedIndex !== null) {
             const updatedNames = names.filter((_, index) => index !== selectedIndex);
             setNames(updatedNames);
-            setPrefix('')
             setName('');
             setSurname('');
             setSelectedIndex(null);
@@ -48,25 +40,26 @@ const Crud: React.FC = () => {
 
     const handleSelect = (index: number) => {
         setSelectedIndex(index);
-        const [selectedPrefix, selectedName, selectedSurname] = names[index].split(' ');
-        setPrefix(selectedPrefix)
+        const [selectedName, selectedSurname] = names[index].split(' ');
         setName(selectedName);
         setSurname(selectedSurname);
     };
 
+    // Adjust the filtering logic to match the full name or surname with the prefix
     const filteredNames = names.filter((name) =>
-        name.split(' ')[1].startsWith(prefix)
+        name.toLowerCase().startsWith(prefix.toLowerCase())
     );
 
     return (
         <div className={styles.container}>
             <div className={styles.field}>
-                <label htmlFor="prefix">Prefix:</label>
+                <label htmlFor="prefix">Prefix Filter:</label>
                 <input
                     id="prefix"
                     type="text"
                     value={prefix}
                     onChange={(e) => setPrefix(e.target.value)}
+                    placeholder="Enter name prefix"
                 />
             </div>
             <div className={styles.field}>

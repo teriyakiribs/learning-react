@@ -95,7 +95,3 @@ test('progress bar updates as time elapses', () => {
     // Check that the progress bar reflects 100% progress
     expect(progressBar).toHaveAttribute('value', '100');
 });
-
-// TODO:
-// for flight booker, remove date picker and add validation
-// for Crud, prefix is the filter
