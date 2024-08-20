@@ -1,7 +1,7 @@
 // components/FlightBooker.test.tsx
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom'
+import '@testing-library/jest-dom';
 import FlightBooker from './FlightBooker';
 
 test('renders FlightBooker component with initial state', () => {
@@ -12,10 +12,10 @@ test('renders FlightBooker component with initial state', () => {
     const select = screen.getByDisplayValue('One-way flight');
     expect(select).toBeInTheDocument();
 
-    const startDateInput = screen.getByDisplayValue('2023-01-01');
+    const startDateInput = screen.getByDisplayValue('01-01-2023');
     expect(startDateInput).toBeInTheDocument();
 
-    const returnDateInput = screen.getByDisplayValue('2023-01-02');
+    const returnDateInput = screen.getByDisplayValue('02-01-2023');
     expect(returnDateInput).toBeInTheDocument();
     expect(returnDateInput).toBeDisabled();
 
@@ -26,14 +26,13 @@ test('renders FlightBooker component with initial state', () => {
 
 test('enables return date input when return flight is selected', () => {
     render(<FlightBooker />);
-    const returnDateInput = screen.getByDisplayValue('2023-01-02');
+    const returnDateInput = screen.getByDisplayValue('02-01-2023');
 
     expect(returnDateInput).toBeDisabled();
 
     const select = screen.getByDisplayValue('One-way flight');
     fireEvent.change(select, { target: { value: 'return flight' } });
 
-    // const returnDateInput = screen.getByDisplayValue('2023-01-02');
     expect(returnDateInput).not.toBeDisabled();
 });
 
@@ -42,8 +41,8 @@ test('disables button if return date is before start date', () => {
     const select = screen.getByDisplayValue('One-way flight');
     fireEvent.change(select, { target: { value: 'return flight' } });
 
-    const returnDateInput = screen.getByDisplayValue('2023-01-02'); // make default start date as constant
-    fireEvent.change(returnDateInput, { target: { value: '2022-12-31' } });
+    const returnDateInput = screen.getByDisplayValue('02-01-2023');
+    fireEvent.change(returnDateInput, { target: { value: '31-12-2022' } });
 
     const button = screen.getByRole('button', { name: /Book Flight/i });
     expect(button).toBeDisabled();
@@ -54,8 +53,8 @@ test('enables button if return date is after start date', () => {
     const select = screen.getByDisplayValue('One-way flight');
     fireEvent.change(select, { target: { value: 'return flight' } });
 
-    const returnDateInput = screen.getByDisplayValue('2023-01-01');
-    fireEvent.change(returnDateInput, { target: { value: '2023-01-02' } });
+    const returnDateInput = screen.getByDisplayValue('02-01-2023');
+    fireEvent.change(returnDateInput, { target: { value: '03-01-2023' } });
 
     const button = screen.getByRole('button', { name: /Book Flight/i });
     expect(button).not.toBeDisabled();
@@ -68,7 +67,7 @@ test('shows alert with correct message when booking one-way flight', () => {
     const button = screen.getByRole('button', { name: /Book Flight/i });
     fireEvent.click(button);
 
-    expect(window.alert).toHaveBeenCalledWith('You have booked a one-way flight on 2023-01-01.');
+    expect(window.alert).toHaveBeenCalledWith('You have booked a one-way flight on 01-01-2023.');
 });
 
 test('shows alert with correct message when booking return flight', () => {
@@ -78,11 +77,11 @@ test('shows alert with correct message when booking return flight', () => {
     const select = screen.getByDisplayValue('One-way flight');
     fireEvent.change(select, { target: { value: 'return flight' } });
 
-    const returnDateInput = screen.getByDisplayValue('2023-01-02');
-    fireEvent.change(returnDateInput, { target: { value: '2023-01-02' } });
+    const returnDateInput = screen.getByDisplayValue('02-01-2023');
+    fireEvent.change(returnDateInput, { target: { value: '03-01-2023' } });
 
     const button = screen.getByRole('button', { name: /Book Flight/i });
     fireEvent.click(button);
 
-    expect(window.alert).toHaveBeenCalledWith('You have booked a return flight from 2023-01-01 to 2023-01-02.');
+    expect(window.alert).toHaveBeenCalledWith('You have booked a return flight from 01-01-2023 to 03-01-2023.');
 });

@@ -68,15 +68,12 @@ test('progress bar updates as time elapses', () => {
     render(<Timer />);
     const durationInput = screen.getByLabelText(/Duration:/i);
 
-    // Set the duration to 100 seconds for easy calculation
     fireEvent.change(durationInput, { target: { value: '100' } });
 
-    // Advance timers by 25 seconds (25% of the duration)
     act(() => {
         jest.advanceTimersByTime(25000);
     });
 
-    // Find the progress bar by its role and check its value
     const progressBar = screen.getByRole('progressbar');
 
     // Check that the progress bar reflects 25% progress

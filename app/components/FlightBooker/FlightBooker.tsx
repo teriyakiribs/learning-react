@@ -6,8 +6,8 @@ import styles from './FlightBooker.module.css';
 
 const FlightBooker: React.FC = () => {
     const [flightType, setFlightType] = useState<string>('one-way flight');
-    const [startDate, setStartDate] = useState<string>('2023-01-01');
-    const [returnDate, setReturnDate] = useState<string>('2023-01-02');
+    const [startDate, setStartDate] = useState<string>('01-01-2023');
+    const [returnDate, setReturnDate] = useState<string>('02-01-2023');
     const [isValidStartDate, setIsValidStartDate] = useState<boolean>(true);
     const [isValidReturnDate, setIsValidReturnDate] = useState<boolean>(true);
 
@@ -15,33 +15,33 @@ const FlightBooker: React.FC = () => {
         setFlightType(e.target.value);
     };
 
+    const validateDate = (dateString: string) => {
+        const regEx = /^\d{2}-\d{2}-\d{4}$/;
+        if (!dateString.match(regEx)) return false; // Invalid format
+        const [day, month, year] = dateString.split('-').map(Number);
+        const date = new Date(year, month - 1, day);
+        return date.getDate() === day && date.getMonth() === month - 1 && date.getFullYear() === year;
+    };
+
     const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setStartDate(value);
-        setIsValidStartDate(validateDate(value));
-        if (flightType === 'return flight') {
-            setIsValidReturnDate(validateDate(returnDate) && new Date(returnDate) >= new Date(value));
+        const isValid = validateDate(value);
+        setIsValidStartDate(isValid);
+        if (flightType === 'return flight' && isValid) {
+            setIsValidReturnDate(validateDate(returnDate) && new Date(returnDate.split('-').reverse().join('-')) >= new Date(value.split('-').reverse().join('-')));
         }
     };
 
     const handleReturnDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setReturnDate(value);
-        setIsValidReturnDate(validateDate(value) && new Date(value) >= new Date(startDate));
-    };
-
-    const validateDate = (dateString: string) => {
-        const regEx = /^\d{4}-\d{2}-\d{2}$/;
-        if (!dateString.match(regEx)) return false; // Invalid format
-        const d = new Date(dateString);
-        const dNum = d.getTime();
-        if (!dNum && dNum !== 0) return false; // NaN value, Invalid date
-        return d.toISOString().slice(0, 10) === dateString;
+        setIsValidReturnDate(validateDate(value) && new Date(value.split('-').reverse().join('-')) >= new Date(startDate.split('-').reverse().join('-')));
     };
 
     const isButtonDisabled = () => {
         if (!isValidStartDate || (flightType === 'return flight' && !isValidReturnDate)) return true;
-        if (flightType === 'return flight' && new Date(returnDate) < new Date(startDate)) return true;
+        if (flightType === 'return flight' && new Date(returnDate.split('-').reverse().join('-')) < new Date(startDate.split('-').reverse().join('-'))) return true;
         return false;
     };
 
@@ -66,9 +66,10 @@ const FlightBooker: React.FC = () => {
                 <label>
                     Start Date:
                     <input
-                        type="date"
+                        type="text"
                         value={startDate}
                         onChange={handleStartDateChange}
+                        placeholder="dd-mm-yyyy"
                         className={`${styles.inputField} ${!isValidStartDate ? styles.invalid : ''}`}
                     />
                 </label>
@@ -77,9 +78,10 @@ const FlightBooker: React.FC = () => {
                 <label>
                     Return Date:
                     <input
-                        type="date"
+                        type="text"
                         value={returnDate}
                         onChange={handleReturnDateChange}
+                        placeholder="dd-mm-yyyy"
                         disabled={flightType === 'one-way flight'}
                         className={`${styles.inputField} ${!isValidReturnDate ? styles.invalid : ''}`}
                     />

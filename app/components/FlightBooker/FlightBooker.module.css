@@ -14,7 +14,7 @@
 }
 
 .invalid {
-    border-color: red;
+    background-color: red;
 }
 
 .button {
