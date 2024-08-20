@@ -26,10 +26,14 @@ test('renders FlightBooker component with initial state', () => {
 
 test('enables return date input when return flight is selected', () => {
     render(<FlightBooker />);
+    const returnDateInput = screen.getByDisplayValue('2023-01-02');
+
+    expect(returnDateInput).toBeDisabled();
+
     const select = screen.getByDisplayValue('One-way flight');
     fireEvent.change(select, { target: { value: 'return flight' } });
 
-    const returnDateInput = screen.getByDisplayValue('2023-01-02');
+    // const returnDateInput = screen.getByDisplayValue('2023-01-02');
     expect(returnDateInput).not.toBeDisabled();
 });
 
@@ -38,7 +42,7 @@ test('disables button if return date is before start date', () => {
     const select = screen.getByDisplayValue('One-way flight');
     fireEvent.change(select, { target: { value: 'return flight' } });
 
-    const returnDateInput = screen.getByDisplayValue('2023-01-02');
+    const returnDateInput = screen.getByDisplayValue('2023-01-02'); // make default start date as constant
     fireEvent.change(returnDateInput, { target: { value: '2022-12-31' } });
 
     const button = screen.getByRole('button', { name: /Book Flight/i });

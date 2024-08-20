@@ -64,19 +64,41 @@ test('resets the timer when reset button is clicked', () => {
     expect(elapsedTime).toBeInTheDocument();
 });
 
-test('updates duration and restarts timer when duration is increased', () => {
+test('progress bar updates as time elapses', () => {
     render(<Timer />);
     const durationInput = screen.getByLabelText(/Duration:/i);
 
-    fireEvent.change(durationInput, { target: { value: '120' } });
+    // Set the duration to 100 seconds for easy calculation
+    fireEvent.change(durationInput, { target: { value: '100' } });
 
-    const durationLabel = screen.getByText(/120 seconds/i);
-    expect(durationLabel).toBeInTheDocument();
-
+    // Advance timers by 25 seconds (25% of the duration)
     act(() => {
-        jest.advanceTimersByTime(121000); // Advance timers by 121 seconds
+        jest.advanceTimersByTime(25000);
     });
 
-    const elapsedTime = screen.getByText(/Elapsed Time: 121 seconds/i);
-    expect(elapsedTime).toBeInTheDocument();
+    // Find the progress bar by its role and check its value
+    const progressBar = screen.getByRole('progressbar');
+
+    // Check that the progress bar reflects 25% progress
+    expect(progressBar).toHaveAttribute('value', '25');
+
+    // Advance timers by another 50 seconds (total of 75% of the duration)
+    act(() => {
+        jest.advanceTimersByTime(50000);
+    });
+
+    // Check that the progress bar reflects 75% progress
+    expect(progressBar).toHaveAttribute('value', '75');
+
+    // Advance timers by the remaining 25 seconds (total of 100% of the duration)
+    act(() => {
+        jest.advanceTimersByTime(25000);
+    });
+
+    // Check that the progress bar reflects 100% progress
+    expect(progressBar).toHaveAttribute('value', '100');
 });
+
+// TODO:
+// for flight booker, remove date picker and add validation
+// for Crud, prefix is the filter
