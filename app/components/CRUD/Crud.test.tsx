@@ -1,4 +1,3 @@
-// components/Crud.test.tsx
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import Crud from './Crud';
@@ -6,10 +5,9 @@ import Crud from './Crud';
 test('renders Crud component with initial state', () => {
     render(<Crud />);
 
-    const prefixInput = screen.getByLabelText(/Prefix:/i);
+    const prefixInput = screen.getByLabelText(/Prefix Filter:/i);
     const nameInput = screen.getByTestId('name-input');
     const surnameInput = screen.getByLabelText(/Surname:/i);
-
 
     const createButton = screen.getByText(/Create/i);
     const updateButton = screen.getByText(/Update/i);
@@ -28,60 +26,83 @@ test('renders Crud component with initial state', () => {
 test('adds a new name to the list when Create is clicked', () => {
     render(<Crud />);
 
-    const prefixInput = screen.getByLabelText(/Prefix:/i);
     const nameInput = screen.getByTestId('name-input');
     const surnameInput = screen.getByLabelText(/Surname:/i);
     const createButton = screen.getByText(/Create/i);
 
-    fireEvent.change(prefixInput, { target: { value: 'Dr.' } });
     fireEvent.change(nameInput, { target: { value: 'John' } });
     fireEvent.change(surnameInput, { target: { value: 'Doe' } });
     fireEvent.click(createButton);
 
-    const listItem = screen.getByText('Dr. John Doe');
+    const listItem = screen.getByText('John Doe');
     expect(listItem).toBeInTheDocument();
 });
 
 test('updates the selected name in the list when Update is clicked', () => {
     render(<Crud />);
 
-    const prefixInput = screen.getByLabelText(/Prefix:/i);
     const nameInput = screen.getByTestId('name-input');
     const surnameInput = screen.getByLabelText(/Surname:/i);
     const createButton = screen.getByText(/Create/i);
     const updateButton = screen.getByText(/Update/i);
 
-    fireEvent.change(prefixInput, { target: { value: 'Dr.' } });
     fireEvent.change(nameInput, { target: { value: 'John' } });
     fireEvent.change(surnameInput, { target: { value: 'Doe' } });
     fireEvent.click(createButton);
 
-    fireEvent.click(screen.getByText('Dr. John Doe'));
-    fireEvent.change(prefixInput, { target: { value: 'Mr.' } });
+    fireEvent.click(screen.getByText('John Doe'));
     fireEvent.change(nameInput, { target: { value: 'Jane' } });
     fireEvent.change(surnameInput, { target: { value: 'Smith' } });
     fireEvent.click(updateButton);
 
-    const updatedListItem = screen.getByText('Mr. Jane Smith');
+    const updatedListItem = screen.getByText('Jane Smith');
     expect(updatedListItem).toBeInTheDocument();
 });
 
 test('deletes the selected name from the list when Delete is clicked', () => {
     render(<Crud />);
 
-    const prefixInput = screen.getByLabelText(/Prefix:/i);
     const nameInput = screen.getByTestId('name-input');
     const surnameInput = screen.getByLabelText(/Surname:/i);
     const createButton = screen.getByText(/Create/i);
     const deleteButton = screen.getByText(/Delete/i);
 
-    fireEvent.change(prefixInput, { target: { value: 'Dr.' } });
     fireEvent.change(nameInput, { target: { value: 'John' } });
     fireEvent.change(surnameInput, { target: { value: 'Doe' } });
     fireEvent.click(createButton);
 
-    fireEvent.click(screen.getByText('Dr. John Doe'));
+    fireEvent.click(screen.getByText('John Doe'));
     fireEvent.click(deleteButton);
 
-    expect(screen.queryByText('Dr. John Doe')).not.toBeInTheDocument();
+    expect(screen.queryByText('John Doe')).not.toBeInTheDocument();
+});
+
+test('filters the list based on the prefix entered', () => {
+    render(<Crud />);
+
+    const nameInput = screen.getByTestId('name-input');
+    const surnameInput = screen.getByLabelText(/Surname:/i);
+    const prefixInput = screen.getByLabelText(/Prefix Filter:/i);
+    const createButton = screen.getByText(/Create/i);
+
+    // Add names to the list
+    fireEvent.change(nameInput, { target: { value: 'John' } });
+    fireEvent.change(surnameInput, { target: { value: 'Smith' } });
+    fireEvent.click(createButton);
+
+    fireEvent.change(nameInput, { target: { value: 'Jane' } });
+    fireEvent.change(surnameInput, { target: { value: 'Doe' } });
+    fireEvent.click(createButton);
+
+    fireEvent.change(nameInput, { target: { value: 'Jay' } });
+    fireEvent.change(surnameInput, { target: { value: 'Zee' } });
+    fireEvent.click(createButton);
+
+    // Apply prefix filter
+    fireEvent.change(prefixInput, { target: { value: 'Ja' } });
+
+    // Check filtered results
+    expect(screen.queryByText('John Smith')).not.toBeInTheDocument();
+    expect(screen.getByText('Jane Doe')).toBeInTheDocument();
+    expect(screen.getByText('Jay Zee')).toBeInTheDocument();
 });

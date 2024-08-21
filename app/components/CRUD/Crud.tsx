@@ -45,10 +45,14 @@ const Crud: React.FC = () => {
         setSurname(selectedSurname);
     };
 
-    // Adjust the filtering logic to match the full name or surname with the prefix
-    const filteredNames = names.filter((name) =>
-        name.toLowerCase().startsWith(prefix.toLowerCase())
-    );
+    // Adjust the filtering logic to check both first and last names
+    const filteredNames = names.filter((name) => {
+        const [firstName, lastName] = name.split(' ');
+        return (
+            firstName.toLowerCase().startsWith(prefix.toLowerCase()) ||
+            lastName?.toLowerCase().startsWith(prefix.toLowerCase())
+        );
+    });
 
     return (
         <div className={styles.container}>
