@@ -1,27 +1,34 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './Crud.module.css';
+import Names from './Names';
+import CrudController from './CrudController';
 
 const Crud: React.FC = () => {
-    const [names, setNames] = useState<string[]>([]);
+    const [model] = useState(new Names());
+    const [filteredNames, setFilteredNames] = useState<string[]>(model.getNames());
+    const [controller] = useState(new CrudController(model, { render: setFilteredNames }));
     const [prefix, setPrefix] = useState<string>('');
     const [name, setName] = useState<string>('');
     const [surname, setSurname] = useState<string>('');
     const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
+    useEffect(() => {
+        controller.initializeView();
+    }, [controller]);
+
     const handleAdd = () => {
         const fullName = `${name} ${surname}`.trim();
-        setNames([...names, fullName]);
+        controller.addName(fullName);
         setName('');
         setSurname('');
     };
 
     const handleUpdate = () => {
         if (selectedIndex !== null) {
-            const updatedNames = [...names];
-            updatedNames[selectedIndex] = `${name} ${surname}`;
-            setNames(updatedNames);
+            const fullName = `${name} ${surname}`.trim();
+            controller.updateName(selectedIndex, fullName);
             setName('');
             setSurname('');
             setSelectedIndex(null);
@@ -30,8 +37,7 @@ const Crud: React.FC = () => {
 
     const handleDelete = () => {
         if (selectedIndex !== null) {
-            const updatedNames = names.filter((_, index) => index !== selectedIndex);
-            setNames(updatedNames);
+            controller.deleteName(selectedIndex);
             setName('');
             setSurname('');
             setSelectedIndex(null);
@@ -40,19 +46,15 @@ const Crud: React.FC = () => {
 
     const handleSelect = (index: number) => {
         setSelectedIndex(index);
-        const [selectedName, selectedSurname] = names[index].split(' ');
+        const [selectedName, selectedSurname] = filteredNames[index].split(' ');
         setName(selectedName);
         setSurname(selectedSurname);
     };
 
-    // Adjust the filtering logic to check both first and last names
-    const filteredNames = names.filter((name) => {
-        const [firstName, lastName] = name.split(' ');
-        return (
-            firstName.toLowerCase().startsWith(prefix.toLowerCase()) ||
-            lastName?.toLowerCase().startsWith(prefix.toLowerCase())
-        );
-    });
+    const handlePrefixChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setPrefix(e.target.value);
+        controller.filterNames(e.target.value);
+    };
 
     return (
         <div className={styles.container}>
@@ -62,7 +64,7 @@ const Crud: React.FC = () => {
                     id="prefix"
                     type="text"
                     value={prefix}
-                    onChange={(e) => setPrefix(e.target.value)}
+                    onChange={handlePrefixChange}
                     placeholder="Enter name prefix"
                 />
             </div>
