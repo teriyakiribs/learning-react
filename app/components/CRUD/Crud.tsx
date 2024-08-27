@@ -2,13 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import styles from './Crud.module.css';
-import Names from './Names';
+import NamesRepository from './NamesRepository';
 import CrudController from './CrudController';
 
 const Crud: React.FC = () => {
-    const [model] = useState(new Names());
-    const [filteredNames, setFilteredNames] = useState<string[]>(model.getNames());
-    const [controller] = useState(new CrudController(model, { render: setFilteredNames }));
+    const [repository] = useState(new NamesRepository());
+    const [filteredNames, setFilteredNames] = useState<string[]>([]);
+    const [controller] = useState(new CrudController(repository, { render: setFilteredNames }));
+
     const [prefix, setPrefix] = useState<string>('');
     const [name, setName] = useState<string>('');
     const [surname, setSurname] = useState<string>('');
@@ -18,26 +19,26 @@ const Crud: React.FC = () => {
         controller.initializeView();
     }, [controller]);
 
-    const handleAdd = () => {
+    const handleAdd = async () => {
         const fullName = `${name} ${surname}`.trim();
-        controller.addName(fullName);
+        await controller.addName(fullName);
         setName('');
         setSurname('');
     };
 
-    const handleUpdate = () => {
+    const handleUpdate = async () => {
         if (selectedIndex !== null) {
             const fullName = `${name} ${surname}`.trim();
-            controller.updateName(selectedIndex, fullName);
+            await controller.updateName(selectedIndex, fullName);
             setName('');
             setSurname('');
             setSelectedIndex(null);
         }
     };
 
-    const handleDelete = () => {
+    const handleDelete = async () => {
         if (selectedIndex !== null) {
-            controller.deleteName(selectedIndex);
+            await controller.deleteName(selectedIndex);
             setName('');
             setSurname('');
             setSelectedIndex(null);

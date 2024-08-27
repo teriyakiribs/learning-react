@@ -1,35 +1,47 @@
-import Names from './Names';
+import NamesRepository from './NamesRepository';
 
 class CrudController {
-    private model: Names;
-    private view: any; // Placeholder, replace with the view type if needed
+    private repository: NamesRepository;
+    private view: any;
 
-    constructor(model: Names, view: any) {
-        this.model = model;
+    constructor(repository: NamesRepository, view: any) {
+        this.repository = repository;
         this.view = view;
     }
 
-    initializeView() {
-        this.view.render(this.model.getNames());
+    async initializeView() {
+        const names = await this.repository.getAllNames();
+        this.view.render(names);
     }
 
-    addName(name: string) {
-        this.model.addName(name);
-        this.view.render(this.model.getNames());
+    async addName(name: string) {
+        await this.repository.addName(name);
+        const names = await this.repository.getAllNames();
+        this.view.render(names);
     }
 
-    updateName(index: number, newName: string) {
-        this.model.updateName(index, newName);
-        this.view.render(this.model.getNames());
+    async updateName(index: number, newName: string) {
+        await this.repository.updateName(index, newName);
+        const names = await this.repository.getAllNames();
+        this.view.render(names);
     }
 
-    deleteName(index: number) {
-        this.model.deleteName(index);
-        this.view.render(this.model.getNames());
+    async deleteName(index: number) {
+        await this.repository.deleteName(index);
+        const names = await this.repository.getAllNames();
+        this.view.render(names);
     }
 
-    filterNames(prefix: string) {
-        this.view.render(this.model.filterNames(prefix));
+    async filterNames(prefix: string) {
+        const names = await this.repository.getAllNames();
+        const filteredNames = names.filter((name) => {
+            const [firstName, lastName] = name.split(' ');
+            return (
+                firstName.toLowerCase().startsWith(prefix.toLowerCase()) ||
+                lastName?.toLowerCase().startsWith(prefix.toLowerCase())
+            );
+        });
+        this.view.render(filteredNames);
     }
 }
 
