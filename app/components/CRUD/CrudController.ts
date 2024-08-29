@@ -1,4 +1,5 @@
 import NamesRepository from './NamesRepository';
+import {act} from "@testing-library/react";
 
 class CrudController {
     private repository: NamesRepository;
@@ -11,7 +12,9 @@ class CrudController {
 
     async initializeView() {
         const names = await this.repository.getAllNames();
-        this.view.render(names);
+        // act(() => {
+            this.view.render(names);
+        // });
     }
 
     async addName(name: string) {
