@@ -6,50 +6,49 @@ import NamesRepository from './NamesRepository';
 import CrudController from './CrudController';
 
 const Crud: React.FC = () => {
-    const [repository] = useState(new NamesRepository());
     const [filteredNames, setFilteredNames] = useState<string[]>([]);
-    const [controller] = useState(new CrudController(repository, { render: setFilteredNames }));
+    const repository = new NamesRepository('http://localhost:8080'); // Ensure the API URL is correct
+    const controller = new CrudController(repository, { render: setFilteredNames });
 
     const [prefix, setPrefix] = useState<string>('');
-    const [name, setName] = useState<string>('');
+    const [firstname, setFirstname] = useState<string>('');
     const [surname, setSurname] = useState<string>('');
-    const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
+    const [selectedUsername, setSelectedUsername] = useState<string | null>(null);
 
     useEffect(() => {
         controller.initializeView();
     }, [controller]);
 
     const handleAdd = async () => {
-        const fullName = `${name} ${surname}`.trim();
-        await controller.addName(fullName);
-        setName('');
+        await controller.addName(firstname.trim(), surname.trim());
+        setFirstname('');
         setSurname('');
     };
 
     const handleUpdate = async () => {
-        if (selectedIndex !== null) {
-            const fullName = `${name} ${surname}`.trim();
-            await controller.updateName(selectedIndex, fullName);
-            setName('');
+        if (selectedUsername !== null) {
+            await controller.updateName(selectedUsername, firstname.trim(), surname.trim());
+            setFirstname('');
             setSurname('');
-            setSelectedIndex(null);
+            setSelectedUsername(null);
         }
     };
 
     const handleDelete = async () => {
-        if (selectedIndex !== null) {
-            await controller.deleteName(selectedIndex);
-            setName('');
+        if (selectedUsername !== null) {
+            await controller.deleteName(selectedUsername);
+            setFirstname('');
             setSurname('');
-            setSelectedIndex(null);
+            setSelectedUsername(null);
         }
     };
 
     const handleSelect = (index: number) => {
-        setSelectedIndex(index);
-        const [selectedName, selectedSurname] = filteredNames[index].split(' ');
-        setName(selectedName);
-        setSurname(selectedSurname);
+        const selectedName = filteredNames[index];
+        const [selectedFirstName, selectedLastName] = selectedName.split(' ');
+        setFirstname(selectedFirstName);
+        setSurname(selectedLastName);
+        setSelectedUsername(`${selectedFirstName} ${selectedLastName}`); // Assuming username is formed by this pattern
     };
 
     const handlePrefixChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,17 +69,17 @@ const Crud: React.FC = () => {
                 />
             </div>
             <div className={styles.field}>
-                <label htmlFor="name">Name:</label>
+                <label htmlFor="firstname">Firstname:</label>
                 <input
-                    id="name"
+                    id="firstname"
                     type="text"
-                    value={name}
+                    value={firstname}
                     data-testid="name-input"
-                    onChange={(e) => setName(e.target.value)}
+                    onChange={(e) => setFirstname(e.target.value)}
                 />
             </div>
             <div className={styles.field}>
-                <label htmlFor="surname">Surname:</label>
+                <label htmlFor="surname">Surname: </label>
                 <input
                     id="surname"
                     type="text"
@@ -90,10 +89,10 @@ const Crud: React.FC = () => {
             </div>
             <div className={styles.buttons}>
                 <button onClick={handleAdd}>Create</button>
-                <button onClick={handleUpdate} disabled={selectedIndex === null}>
+                <button onClick={handleUpdate} disabled={selectedUsername === null}>
                     Update
                 </button>
-                <button onClick={handleDelete} disabled={selectedIndex === null}>
+                <button onClick={handleDelete} disabled={selectedUsername === null}>
                     Delete
                 </button>
             </div>
@@ -102,7 +101,7 @@ const Crud: React.FC = () => {
                     {filteredNames.map((name, index) => (
                         <li
                             key={index}
-                            className={selectedIndex === index ? styles.selected : ''}
+                            className={selectedUsername === `${name.split(' ')[0]} ${name.split(' ')[1]}` ? styles.selected : ''}
                             onClick={() => handleSelect(index)}
                         >
                             {name}

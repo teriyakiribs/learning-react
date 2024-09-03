@@ -1,5 +1,4 @@
 import NamesRepository from './NamesRepository';
-import {act} from "@testing-library/react";
 
 class CrudController {
     private repository: NamesRepository;
@@ -11,32 +10,30 @@ class CrudController {
     }
 
     async initializeView() {
-        const names = await this.repository.getAllNames();
-        // act(() => {
-            this.view.render(names);
-        // });
-    }
-
-    async addName(name: string) {
-        await this.repository.addName(name);
-        const names = await this.repository.getAllNames();
+        const names = await this.repository.getNames();
         this.view.render(names);
     }
 
-    async updateName(index: number, newName: string) {
-        await this.repository.updateName(index, newName);
-        const names = await this.repository.getAllNames();
+    async addName(firstName: string, lastName: string): Promise<void> {
+        await this.repository.addName(firstName, lastName);
+        const names = await this.repository.getNames();
         this.view.render(names);
     }
 
-    async deleteName(index: number) {
-        await this.repository.deleteName(index);
-        const names = await this.repository.getAllNames();
+    async updateName(username: string, firstName: string, lastName: string) {
+        await this.repository.updateName(username, firstName, lastName);
+        const names = await this.repository.getNames();
+        this.view.render(names);
+    }
+
+    async deleteName(username: string) {
+        await this.repository.deleteName(username);
+        const names = await this.repository.getNames();
         this.view.render(names);
     }
 
     async filterNames(prefix: string) {
-        const names = await this.repository.getAllNames();
+        const names = await this.repository.getNames();
         const filteredNames = names.filter((name) => {
             const [firstName, lastName] = name.split(' ');
             return (

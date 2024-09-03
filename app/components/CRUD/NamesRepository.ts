@@ -1,46 +1,72 @@
+// NameRepository.ts
+
+import axios from 'axios';
+
 class NamesRepository {
-    private names: string[] = [];
+    private apiUrl: string;
 
-    async getAllNames(): Promise<string[]> {
-        // Simulating a database fetch with a promise
-        return new Promise((resolve) => {
-            setTimeout(() => resolve([...this.names]), 100); // Simulate async operation
-        });
+    constructor(apiUrl: string) {
+        this.apiUrl = apiUrl;
     }
 
-    async addName(name: string): Promise<void> {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                this.names.push(name);
-                resolve();
-            }, 100);
-        });
+    async getUsers(): Promise<string[]> {
+        try {
+            const response = await axios.get(`${this.apiUrl}/user`);
+            return response.data.map((user: { firstName: string, lastName: string }) => `${user.firstName} ${user.lastName}`);
+        } catch (error) {
+            console.error('Error fetching users:', error);
+            return [];
+        }
     }
 
-    async updateName(index: number, newName: string): Promise<void> {
-        return new Promise((resolve, reject) => {
-            if (index >= 0 && index < this.names.length) {
-                setTimeout(() => {
-                    this.names[index] = newName;
-                    resolve();
-                }, 100);
-            } else {
-                reject(new Error('Index out of bounds'));
-            }
-        });
+    async getNames(): Promise<string[]> {
+        try {
+            const response = await axios.get(`${this.apiUrl}/user`);
+            return response.data.map((user: { firstName: string, lastName: string }) => `${user.firstName} ${user.lastName}`);
+        } catch (error) {
+            console.error('Error fetching names:', error);
+            return [];
+        }
     }
 
-    async deleteName(index: number): Promise<void> {
-        return new Promise((resolve, reject) => {
-            if (index >= 0 && index < this.names.length) {
-                setTimeout(() => {
-                    this.names = this.names.filter((_, i) => i !== index);
-                    resolve();
-                }, 100);
-            } else {
-                reject(new Error('Index out of bounds'));
-            }
-        });
+    async addName(firstName: string, lastName: string): Promise<void> {
+        try {
+            await axios.post(`${this.apiUrl}/user`, {
+                username: `${firstName} ${lastName}`,
+                firstName: firstName,
+                lastName: lastName,
+                email: '',
+                password: '',
+                phone: '',
+                userStatus: 'REGISTERED'
+            });
+        } catch (error) {
+            console.error('Error adding name:', error);
+        }
+    }
+
+    async updateName(username: string, firstName: string, lastName: string): Promise<void> {
+        try {
+            await axios.put(`${this.apiUrl}/user/${username}`, {
+                username: `${firstName} ${lastName}`,
+                firstName: firstName,
+                lastName: lastName,
+                email: '',
+                password: '',
+                phone: '',
+                userStatus: 'REGISTERED'
+            });
+        } catch (error) {
+            console.error('Error updating name:', error);
+        }
+    }
+
+    async deleteName(username: string): Promise<void> {
+        try {
+            await axios.delete(`${this.apiUrl}/user/${username}`);
+        } catch (error) {
+            console.error('Error deleting name:', error);
+        }
     }
 }
 

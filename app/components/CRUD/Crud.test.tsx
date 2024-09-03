@@ -6,7 +6,7 @@ import NamesRepository from './NamesRepository';
 // Mock the NamesRepository class
 jest.mock('./NamesRepository');
 
-const mockGetAllNames = NamesRepository.prototype.getAllNames as jest.Mock;
+const mockGetAllNames = NamesRepository.prototype.getNames as jest.Mock;
 const mockAddName = NamesRepository.prototype.addName as jest.Mock;
 const mockUpdateName = NamesRepository.prototype.updateName as jest.Mock;
 const mockDeleteName = NamesRepository.prototype.deleteName as jest.Mock;
@@ -16,9 +16,7 @@ beforeEach(() => {
 });
 
 test('renders Crud component with initial state', async () => {
-    // await act(async () => {
-        render(<Crud />);
-    // });
+    render(<Crud />);
 
     const prefixInput = screen.getByLabelText(/Prefix Filter:/i);
     const nameInput = screen.getByTestId('name-input');
