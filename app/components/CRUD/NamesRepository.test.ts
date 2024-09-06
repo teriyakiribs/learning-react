@@ -38,7 +38,7 @@ describe('NamesRepository', () => {
         await repository.addName('John', 'Doe');
 
         expect(mockedAxios.post).toHaveBeenCalledWith(`${apiUrl}/user`, {
-            username: 'John.Doe',
+            username: 'John Doe',
             firstName: 'John',
             lastName: 'Doe',
             email: '',
@@ -51,9 +51,10 @@ describe('NamesRepository', () => {
     test('updateName should send a PUT request to update a name', async () => {
         mockedAxios.put.mockResolvedValueOnce({});
 
-        await repository.updateName('John.Doe', 'John', 'Doe');
+        await repository.updateName('John Doe', 'John', 'Doe');
 
-        expect(mockedAxios.put).toHaveBeenCalledWith(`${apiUrl}/user/John.Doe`, {
+        expect(mockedAxios.put).toHaveBeenCalledWith(`${apiUrl}/user/John Doe`, {
+            username: "John Doe",
             firstName: 'John',
             lastName: 'Doe',
             email: '',

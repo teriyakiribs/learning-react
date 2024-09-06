@@ -52,8 +52,17 @@ const Crud: React.FC = () => {
     };
 
     const handlePrefixChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setPrefix(e.target.value);
-        controller.filterNames(e.target.value);
+        const newPrefix = e.target.value;
+        setPrefix(newPrefix);
+
+        controller.filterNames(newPrefix)
+            .then((filteredNames) => {
+                // You can handle any additional logic here if needed
+                console.log('Filtered names:', filteredNames);
+            })
+            .catch((error) => {
+                console.error('Error filtering names:', error);
+            });
     };
 
     return (
@@ -98,15 +107,19 @@ const Crud: React.FC = () => {
             </div>
             <div className={styles.listContainer}>
                 <ul className={styles.nameList}>
-                    {filteredNames.map((name, index) => (
-                        <li
-                            key={index}
-                            className={selectedUsername === `${name.split(' ')[0]} ${name.split(' ')[1]}` ? styles.selected : ''}
-                            onClick={() => handleSelect(index)}
-                        >
-                            {name}
-                        </li>
-                    ))}
+                    {filteredNames && filteredNames.length > 0 ? (
+                        filteredNames.map((name, index) => (
+                            <li
+                                key={index}
+                                className={selectedUsername === `${name.split(' ')[0]} ${name.split(' ')[1]}` ? styles.selected : ''}
+                                onClick={() => handleSelect(index)}
+                            >
+                                {name}
+                            </li>
+                        ))
+                    ) : (
+                        <li className={styles.emptyMessage}>No names available</li>
+                    )}
                 </ul>
             </div>
         </div>

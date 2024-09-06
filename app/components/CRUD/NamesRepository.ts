@@ -3,21 +3,21 @@
 import axios from 'axios';
 
 class NamesRepository {
-    private apiUrl: string;
+    private readonly apiUrl: string;
 
     constructor(apiUrl: string) {
         this.apiUrl = apiUrl;
     }
 
-    async getUsers(): Promise<string[]> {
-        try {
-            const response = await axios.get(`${this.apiUrl}/user`);
-            return response.data.map((user: { firstName: string, lastName: string }) => `${user.firstName} ${user.lastName}`);
-        } catch (error) {
-            console.error('Error fetching users:', error);
-            return [];
-        }
-    }
+    // async getUsers(): Promise<string[]> {
+    //     try {
+    //         const response = await axios.get(`${this.apiUrl}/user`);
+    //         return response.data.map((user: { firstName: string, lastName: string }) => `${user.firstName} ${user.lastName}`);
+    //     } catch (error) {
+    //         console.error('Error fetching users:', error);
+    //         return [];
+    //     }
+    // }
 
     async getNames(): Promise<string[]> {
         try {

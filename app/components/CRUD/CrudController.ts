@@ -42,6 +42,7 @@ class CrudController {
             );
         });
         this.view.render(filteredNames);
+        return filteredNames;
     }
 }
 
